@@ -112,8 +112,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_add_wishlist_button_optio
 					'title'         => esc_html__( '"Add to Wishlist" Loop Position', 'qode-wishlist-for-woocommerce' ),
 					'description'   => __( 'Choose a button position inside loops. If you select the "Use shortcode" position, copy this shortcode <code>[qode_wishlist_for_woocommerce_add_to_wishlist]</code> and paste it where you wish to place the button', 'qode-wishlist-for-woocommerce' ),
 					'options'       => array(
-						'after-add-to-cart'  => esc_html__( 'After "Add to cart" button', 'qode-wishlist-for-woocommerce' ),
-						'before-add-to-cart' => esc_html__( 'Before "Add to cart" button', 'qode-wishlist-for-woocommerce' ),
+						'after-add-to-cart'  => esc_html__( 'After "Add to cart"', 'qode-wishlist-for-woocommerce' ),
+						'before-add-to-cart' => esc_html__( 'Before "Add to cart"', 'qode-wishlist-for-woocommerce' ),
 						'on-thumbnail'       => esc_html__( 'On Thumbnail', 'qode-wishlist-for-woocommerce' ),
 						'above-thumbnail'    => esc_html__( 'Above Thumbnail', 'qode-wishlist-for-woocommerce' ),
 						'shortcode'          => esc_html__( 'Use shortcode', 'qode-wishlist-for-woocommerce' ),
@@ -240,8 +240,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_add_wishlist_button_optio
 					'title'         => esc_html__( '"Add to Wishlist" Product Page Position', 'qode-wishlist-for-woocommerce' ),
 					'description'   => __( 'Choose a button position on product pages. If you select the "Use shortcode" position, copy this shortcode <code>[qode_wishlist_for_woocommerce_add_to_wishlist]</code> and paste it where you wish to place the button', 'qode-wishlist-for-woocommerce' ),
 					'options'       => array(
-						'after-add-to-cart'      => esc_html__( 'After "Add to cart" button', 'qode-wishlist-for-woocommerce' ),
-						'before-add-to-cart'     => esc_html__( 'Before "Add to cart" button', 'qode-wishlist-for-woocommerce' ),
+						'after-add-to-cart'      => esc_html__( 'After "Add to cart"', 'qode-wishlist-for-woocommerce' ),
+						'before-add-to-cart'     => esc_html__( 'Before "Add to cart"', 'qode-wishlist-for-woocommerce' ),
 						'after-add-to-cart-form' => esc_html__( 'After "Add to cart" form', 'qode-wishlist-for-woocommerce' ),
 						'on-thumbnail'           => esc_html__( 'On Thumbnail', 'qode-wishlist-for-woocommerce' ),
 						'after-summary'          => esc_html__( 'After Summary', 'qode-wishlist-for-woocommerce' ),

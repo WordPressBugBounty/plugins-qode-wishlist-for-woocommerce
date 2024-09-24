@@ -19,7 +19,7 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Text extends Qode_Wishlist_F
 				<?php echo esc_html( $this->params['prefix'] ); ?>
 			</div>
 		<?php endif; ?>
-		<input type="text" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $this->data_attrs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> class="qodef-field qodef-input" name="<?php echo esc_attr( $this->name ); ?>" value="<?php echo esc_attr( esc_html( $this->params['value'] ) ); ?>" placeholder="<?php echo isset( $this->args['placeholder'] ) ? esc_attr( esc_html( $this->args['placeholder'] ) ) : ''; ?>"
+		<input type="text" <?php qode_wishlist_for_woocommerce_inline_attrs( $this->data_attrs ); ?> class="qodef-field qodef-input" name="<?php echo esc_attr( $this->name ); ?>" value="<?php echo esc_attr( esc_html( $this->params['value'] ) ); ?>" placeholder="<?php echo isset( $this->args['placeholder'] ) ? esc_attr( esc_html( $this->args['placeholder'] ) ) : ''; ?>"
 				<?php
 				if ( isset( $this->args['readonly'] ) ) {
 					echo ' readonly';

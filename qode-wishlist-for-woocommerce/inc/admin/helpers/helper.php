@@ -15,8 +15,31 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_template_part' 
 	 * @param array $params array of parameters to pass to template
 	 */
 	function qode_wishlist_for_woocommerce_framework_template_part( $root, $module, $template, $slug = '', $params = array() ) {
+		$module_template_part = qode_wishlist_for_woocommerce_framework_get_template_part( $root, $module, $template, $slug, $params );
+
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo qode_wishlist_for_woocommerce_framework_get_template_part( $root, $module, $template, $slug, $params );
+		echo qode_wishlist_for_woocommerce_framework_wp_kses_html( 'html', $module_template_part );
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_sanitize_module_template_part' ) ) {
+	/**
+	 * Sanitize module template part.
+	 *
+	 * @param string $template temp path to file that is being loaded
+	 *
+	 * @return string - string with template path
+	 */
+	function qode_wishlist_for_woocommerce_framework_sanitize_module_template_part( $template ) {
+		$available_characters = '/[^A-Za-z0-9\_\-\/]/';
+
+		if ( ! empty( $template ) && is_scalar( $template ) ) {
+			$template = preg_replace( $available_characters, '', $template );
+		} else {
+			$template = '';
+		}
+
+		return $template;
 	}
 }
 
@@ -33,19 +56,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_get_template_pa
 	 * @return string - string containing html of template
 	 */
 	function qode_wishlist_for_woocommerce_framework_get_template_part( $root, $module, $template, $slug = '', $params = array() ) {
-		$available_characters = '/[^A-Za-z0-9\_\-\/]/';
-
-		if ( is_scalar( $module ) ) {
-			$module = preg_replace( $available_characters, '', $module );
-		} else {
-			$module = '';
-		}
-
-		if ( is_scalar( $template ) ) {
-			$template = preg_replace( $available_characters, '', $template );
-		} else {
-			$template = '';
-		}
+		$module   = qode_wishlist_for_woocommerce_framework_sanitize_module_template_part( $module );
+		$template = qode_wishlist_for_woocommerce_framework_sanitize_module_template_part( $template );
 
 		$temp = $root . '/' . $module . '/' . $template;
 
@@ -68,6 +80,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_get_template_wi
 		$template = '';
 
 		if ( ! empty( $temp ) ) {
+			$slug = qode_wishlist_for_woocommerce_framework_sanitize_module_template_part( $slug );
+
 			if ( ! empty( $slug ) ) {
 				$template = "{$temp}-{$slug}.php";
 
@@ -121,8 +135,10 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_svg_icon' ) ) {
 	 * @param string $class_name - custom html tag class name
 	 */
 	function qode_wishlist_for_woocommerce_framework_svg_icon( $name, $class_name = '' ) {
+		$svg_template_part = qode_wishlist_for_woocommerce_framework_get_svg_icon( $name, $class_name );
+
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo qode_wishlist_for_woocommerce_framework_get_svg_icon( $name, $class_name );
+		echo qode_wishlist_for_woocommerce_framework_wp_kses_html( 'html', $svg_template_part );
 	}
 }
 
@@ -246,6 +262,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_wp_kses_html' )
 						),
 						'title'    => array(
 							'title' => true,
+							'class' => true,
+							'style' => true,
 						),
 						'path'     => array(
 							'd'            => true,
@@ -257,7 +275,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_wp_kses_html' )
 							'pathlength'   => true,
 						),
 						'polygon'  => array(
-							'points' => true,
+							'points'    => true,
+							'transform' => true,
 						),
 						'line'     => array(
 							'x1'           => true,
@@ -270,6 +289,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_wp_kses_html' )
 						),
 						'polyline' => array(
 							'points'    => true,
+							'stroke'    => true,
+							'fill'      => true,
 							'transform' => true,
 						),
 						'circle'   => array(
@@ -293,6 +314,13 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_wp_kses_html' )
 							'fill'         => true,
 							'fill-opacity' => true,
 							'transform'    => true,
+						),
+						'text'     => array(
+							'x'         => true,
+							'y'         => true,
+							'class'     => true,
+							'style'     => true,
+							'transform' => true,
 						),
 					)
 				);
@@ -455,6 +483,13 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_framework_get_option_valu
 			}
 			if ( ! empty( $post_id ) ) {
 				$value = get_term_meta( $post_id, $name, true );
+			}
+		} elseif ( 'product-attribute' === $type ) {
+			// phpcs:ignore WordPress.Security.NonceVerification
+			$id = isset( $_GET['edit'] ) ? intval( $_GET['edit'] ) : 0;
+			if ( ! empty( $id ) ) {
+				$name  = $name . '_' . strval( $id );
+				$value = get_option( $name );
 			}
 		}
 

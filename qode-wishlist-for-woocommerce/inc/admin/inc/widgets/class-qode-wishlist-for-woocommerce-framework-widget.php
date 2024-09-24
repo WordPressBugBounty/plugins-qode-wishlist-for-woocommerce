@@ -185,7 +185,7 @@ abstract class Qode_Wishlist_For_WooCommerce_Framework_Widget extends WP_Widget 
 					$class[] = isset( $option['field_type'] ) ? 'qodef-widget-field--' . $option['field_type'] : '';
 					$class   = implode( ' ', $class );
 					?>
-					<p class="<?php echo esc_attr( $class ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $dependency_data, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+					<p class="<?php echo esc_attr( $class ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $dependency_data, true ); ?>>
 						<?php if ( ! empty( $option['title'] ) ) : ?>
 							<label for="<?php echo esc_attr( $this->get_field_id( $option['name'] ) ); ?>">
 								<?php echo esc_html( $option['title'] ); ?>:

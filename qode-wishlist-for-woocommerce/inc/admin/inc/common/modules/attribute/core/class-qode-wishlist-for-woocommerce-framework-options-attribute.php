@@ -9,7 +9,7 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Attribute extends Qode_Wis
 	public function __construct() {
 		parent::__construct();
 
-		add_action( 'init', array( $this, 'init_attribute_fields' ) );
+		add_action( 'admin_init', array( $this, 'init_attribute_fields' ) );
 		add_action( 'woocommerce_after_add_attribute_fields', array( $this, 'attribute_fields_display_add' ) );
 		add_action( 'woocommerce_after_edit_attribute_fields', array( $this, 'attribute_fields_display_edit' ) );
 		add_action( 'woocommerce_attribute_added', array( $this, 'save_attribute_fields' ) );
@@ -40,15 +40,29 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Attribute extends Qode_Wis
 	}
 
 	public function save_attribute_fields( $id ) {
+		if ( ! isset( $_POST['_wpnonce'] ) ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['qode_wishlist_for_woocommerce_framework_attribute_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['qode_wishlist_for_woocommerce_framework_attribute_nonce'] ) ), 'qode_wishlist_for_woocommerce_framework_attribute_nonce' ) ) {
+			return;
+		}
+
+		// Don't allow users without capabilities to create new attribute.
+		// phpcs:ignore WordPress.WP.Capabilities.Unknown
+		if ( ! current_user_can( 'manage_product_terms' ) ) {
+			return;
+		}
+
 		foreach ( $this->get_options() as $key => $value ) {
-			// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$value  = array_key_exists( $key, $_POST ) ? wp_unslash( $_POST[ $key ] ) : '';
-			$option = $key . '-' . strval( $id );
+			$value = array_key_exists( $key, $_POST ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
+
+			$qode_wishlist_for_woocommerce_option_name = $key . '_' . strval( $id );
 
 			if ( ( ! empty( $value ) || '0' === $value || 0 === $value ) && '' !== trim( $value ) ) {
-				update_option( $option, sanitize_text_field( wp_unslash( $value ) ) );
+				update_option( $qode_wishlist_for_woocommerce_option_name, sanitize_text_field( wp_unslash( $value ) ) );
 			} else {
-				delete_option( $option );
+				delete_option( $qode_wishlist_for_woocommerce_option_name );
 			}
 		}
 	}

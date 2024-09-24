@@ -32,14 +32,14 @@ abstract class Qode_Wishlist_For_WooCommerce_Framework_Field_WP_Type {
 		$params['value'] = $value;
 
 		// phpcs:ignore WordPress.Security.NonceVerification
-		$layout           = ( 'taxonomy' === $this->type && ! isset( $_GET['tag_ID'] ) ) ? 'div' : 'table';
+		$layout           = ( 'taxonomy' === $this->type && ! isset( $_GET['tag_ID'] ) ) || ( 'product-attribute' === $this->type && ! isset( $_GET['edit'] ) ) ? 'div' : 'table';
 		$params['layout'] = $layout;
 
 		$id           = $this->name;
 		$params['id'] = $id;
 
 		$class   = array();
-		$class[] = 'taxonomy' === $this->type ? 'form-field' : 'user-field';
+		$class[] = 'taxonomy' === $this->type || 'product-attribute' === $this->type ? 'form-field' : 'user-field';
 		$class[] = 'qodef-field-' . $this->field_type;
 
 		$dependency_data = array();
@@ -71,7 +71,7 @@ abstract class Qode_Wishlist_For_WooCommerce_Framework_Field_WP_Type {
 
 	public function render() {
 		if ( 'div' === $this->params['layout'] ) { ?>
-			<div class="<?php echo esc_attr( $this->params['row_class'] ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $this->params['dependency_data'], true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<div class="<?php echo esc_attr( $this->params['row_class'] ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $this->params['dependency_data'], true ); ?>>
 				<label for="<?php echo esc_attr( $this->name ); ?>">
 					<?php echo esc_html( $this->title ); ?>
 				</label>
@@ -88,7 +88,7 @@ abstract class Qode_Wishlist_For_WooCommerce_Framework_Field_WP_Type {
 			<?php
 		} else {
 			?>
-			<tr class="<?php echo esc_attr( $this->params['row_class'] ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $this->params['dependency_data'], true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<tr class="<?php echo esc_attr( $this->params['row_class'] ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $this->params['dependency_data'], true ); ?>>
 				<th scope="row" valign="top">
 					<label for="<?php echo esc_attr( $this->name ); ?>"><?php echo esc_html( $this->title ); ?></label>
 				</th>

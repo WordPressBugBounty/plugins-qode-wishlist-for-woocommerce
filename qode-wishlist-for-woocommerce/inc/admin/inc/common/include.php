@@ -20,6 +20,7 @@ require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/core/class-
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-type.php';
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-select.php';
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-text.php';
+require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-number.php';
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-hidden.php';
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-textarea.php';
 require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/inc/common/fields/class-qode-wishlist-for-woocommerce-framework-field-textareahtml.php';

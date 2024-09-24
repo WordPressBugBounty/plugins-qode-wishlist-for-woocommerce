@@ -4,10 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Qode_Wishlist_For_WooCommerce_Framework_Page_Taxonomy extends Qode_Wishlist_For_WooCommerce_Framework_Page {
+class Qode_Wishlist_For_WooCommerce_Framework_Section_Taxonomy extends Qode_Wishlist_For_WooCommerce_Framework_Section {
 
-	public function add_tab_element( $params ) {
-		throw new BadMethodCallException();
+	public function add_row_element( $params ) {
+		return false;
 	}
 
 	public function add_section_element( $params ) {
@@ -23,12 +23,8 @@ class Qode_Wishlist_For_WooCommerce_Framework_Page_Taxonomy extends Qode_Wishlis
 		return false;
 	}
 
-	public function add_row_element( $params ) {
-		throw new BadMethodCallException();
-	}
-
 	public function add_repeater_element( $params ) {
-		throw new BadMethodCallException();
+		return false;
 	}
 
 	public function add_field_element( $params ) {

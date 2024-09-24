@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</svg>
 		<h2><?php esc_html_e( 'Support', 'qode-wishlist-for-woocommerce' ); ?></h2>
 		<p><?php esc_html_e( 'Our dedicated team of support pros is there for your plugin-related questions.', 'qode-wishlist-for-woocommerce' ); ?></p>
-		<a class="qodef-btn qodef-btn-underlined" href="https://qodeinteractive.com/submit-a-request/?utm_source=dash&utm_medium=wishlist&utm_campaign=help"><span class="qodef-btn-text"><?php esc_html_e( 'Submit a Ticket', 'qode-wishlist-for-woocommerce' ); ?></span></a>
+		<a class="qodef-btn qodef-btn-underlined" href="https://qodeinteractive.com/submit-a-request/?utm_source=dash&utm_medium=qodewishlist&utm_campaign=help"><span class="qodef-btn-text"><?php esc_html_e( 'Submit a Ticket', 'qode-wishlist-for-woocommerce' ); ?></span></a>
 	</div>
 	<div class="qodef-custom-page-box">
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -31,8 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</g>
 			</g>
 		</svg>
-		<h2><?php esc_html_e( 'Rate Qode Wishlist', 'qode-wishlist-for-woocommerce' ); ?></h2>
-		<p><?php esc_html_e( 'Let us know about your experience with the Qode Wishlist for WooCommerce.', 'qode-wishlist-for-woocommerce' ); ?></p>
+		<h2><?php esc_html_e( 'Rate QODE Wishlist', 'qode-wishlist-for-woocommerce' ); ?></h2>
+		<p><?php esc_html_e( 'Let us know about your experience with the QODE Wishlist for WooCommerce.', 'qode-wishlist-for-woocommerce' ); ?></p>
 		<a class="qodef-btn qodef-btn-underlined" href="https://wordpress.org/plugins/qode-wishlist-for-woocommerce/#reviews"><span class="qodef-btn-text"><?php esc_html_e( 'Rate Us', 'qode-wishlist-for-woocommerce' ); ?></span></a>
 	</div>
 </div>

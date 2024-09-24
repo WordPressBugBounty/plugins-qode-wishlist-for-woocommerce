@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	// Exit if accessed directly.
 	exit;
 }
+$cpt_pages = apply_filters( 'qode_wishlist_for_woocommerce_filter_admin_pages_cpt', array() );
+$tax_pages = apply_filters( 'qode_wishlist_for_woocommerce_filter_admin_pages_tax', array() );
 ?>
 <div class="qodef-tabs-navigation-wrapper">
 	<div class="qodef-tabs-navigation-wrapper-inner">
@@ -45,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							$item_class[] = 'qodef-layout-custom';
 						}
 						?>
-						<li class="nav-item <?php echo esc_attr( implode( ' ', $item_class ) ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $dependency_data, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+						<li class="nav-item <?php echo esc_attr( implode( ' ', $item_class ) ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $dependency_data, true ); ?>>
 							<span class="nav-link" data-section="<?php echo esc_attr( $section_slug ); ?>">
 									<?php if ( $page_object->get_icon() !== '' && $use_icons ) { ?>
 										<i class="<?php echo esc_attr( $page_object->get_icon() ); ?> qodef-tooltip qodef-inline-tooltip left" data-placement="top" data-toggle="tooltip" title="<?php echo esc_attr( $page_title ); ?>"></i>
@@ -54,6 +56,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</span>
 						</li>
 					<?php } ?>
+					<?php
+					if ( is_array( $cpt_pages ) && count( $cpt_pages ) ) {
+						foreach ( $cpt_pages as $cpt => $name ) {
+							$this_post_type = get_post_type();
+							$active_class   = '';
+
+							if ( ! empty( $this_post_type ) && $this_post_type === $cpt ) {
+								$active_class = 'qodef-active';
+							}
+							?>
+							<li class="nav-item <?php echo esc_attr( $active_class ); ?>">
+								<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . $cpt ) ); ?>">
+									<span class="nav-link">
+										<?php echo esc_html( $name ); ?>
+									</span>
+								</a>
+							</li>
+							<?php
+						}
+					}
+
+					if ( is_array( $tax_pages ) && count( $tax_pages ) ) {
+						foreach ( $tax_pages as $tax_page => $name ) {
+							$this_taxonomy = get_current_screen()->taxonomy;
+							$active_class  = '';
+
+							if ( ! empty( $this_taxonomy ) && $this_taxonomy === $tax_page ) {
+								$active_class = 'qodef-active';
+							}
+							?>
+							<li class="nav-item <?php echo esc_attr( $active_class ); ?>">
+								<a href="<?php echo esc_url( admin_url( 'edit-tags.php?taxonomy=' . $tax_page ) ); ?>">
+									<span class="nav-link">
+										<?php echo esc_html( $name ); ?>
+									</span>
+								</a>
+							</li>
+							<?php
+						}
+					}
+					?>
 				</ul>
 			</div>
 		</nav>

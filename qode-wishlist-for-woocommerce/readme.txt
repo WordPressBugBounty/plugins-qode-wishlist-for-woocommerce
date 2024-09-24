@@ -4,7 +4,7 @@ Tags: wishlist, woocommerce wishlist, product wishlist, woocommerce, add to wish
 Requires at least: 6.3
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,11 @@ Feel free to try out some of our other products:
 9. Admin Wishlist Page Styles.
 
 == Changelog ==
+
+= 1.2.2 - 24-09-2024 =
+- Improved QODE framework
+- Improved WordPress coding standards
+- Minor fixes
 
 = 1.2.1 - 16-09-2024 =
 - Improved Qode Variation Swatches for WooCommerce - Wishlist compatibility

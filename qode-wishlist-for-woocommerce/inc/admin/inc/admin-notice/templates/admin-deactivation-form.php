@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						printf(
-						// translators: %s - Plugin name.
+							// translators: %s - Plugin name.
 							esc_html__( 'If you have a moment, please share why you are deactivating %s:', 'qode-wishlist-for-woocommerce' ),
 							esc_html( $plugin_name )
 						);
@@ -81,7 +81,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php
 								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								printf(
-								// translators: %s - Plugin name.
+									// translators: %s - Plugin name.
 									esc_html__( 'I have %s Premium', 'qode-wishlist-for-woocommerce' ),
 									esc_html( $plugin_name )
 								);
@@ -92,7 +92,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<?php
 							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							printf(
-							// translators: 1. Plugin name; 2. Plugin name; 3. Plugin name.
+								// translators: 1. Plugin name; 2. Plugin name; 3. Plugin name.
 								esc_html__( 'Wait! Don\'t deactivate %1$s. You have to activate both %2$s and %3$s Premium in order for the plugin to work.', 'qode-wishlist-for-woocommerce' ),
 								esc_html( $plugin_name ),
 								esc_html( $plugin_name ),

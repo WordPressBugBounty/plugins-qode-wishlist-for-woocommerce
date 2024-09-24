@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="qodef-section-wrapper col-12 <?php echo esc_attr( $class ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $dependency_data, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<div class="qodef-section-wrapper col-12 <?php echo esc_attr( $class ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $dependency_data, true ); ?>>
 	<div class="qodef-section-wrapper-inner">
 		<div class="row">
 			<?php

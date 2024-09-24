@@ -5,7 +5,7 @@ Description: Qode Wishlist for WooCommerce plugin is the ideal toolkit for letti
 Author: Qode Interactive
 Author URI: https://qodeinteractive.com/
 Plugin URI: https://qodeinteractive.com/qode-wishlist-for-woocommerce/
-Version: 1.2.1
+Version: 1.2.2
 Requires at least: 6.3
 Requires PHP: 7.4
 WC requires at least: 7.6
@@ -49,6 +49,9 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce' ) ) {
 				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 				add_action( 'wp_enqueue_scripts', array( $this, 'add_inline_style' ) );
 				add_action( 'wp_enqueue_scripts', array( $this, 'localize_scripts' ) );
+
+				// Set WooCommerce features.
+				add_action( 'before_woocommerce_init', array( $this, 'declare_wc_features_support' ) );
 
 				// Include plugin's modules.
 				$this->include_modules();
@@ -114,6 +117,12 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce' ) ) {
 				'qodeWishlistForWooCommerceGlobal',
 				$global
 			);
+		}
+
+		public function declare_wc_features_support() {
+			if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', QODE_WISHLIST_FOR_WOOCOMMERCE_PLUGIN_BASE_FILE, true );
+			}
 		}
 
 		public function include_modules() {

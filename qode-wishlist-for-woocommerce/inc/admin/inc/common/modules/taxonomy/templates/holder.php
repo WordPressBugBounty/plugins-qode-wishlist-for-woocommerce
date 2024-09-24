@@ -9,6 +9,11 @@ foreach ( $this_object->get_child_elements() as $key => $child ) {
 		if ( $taxonomy === $scope ) {
 			$child->set_layout( $layout );
 			$child->render();
+
+			wp_nonce_field(
+				'qode_wishlist_for_woocommerce_framework_taxonomy_nonce',
+				'qode_wishlist_for_woocommerce_framework_taxonomy_nonce'
+			);
 		}
 	}
 }

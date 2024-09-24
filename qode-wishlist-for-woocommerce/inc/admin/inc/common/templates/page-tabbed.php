@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				$dependency_data = qode_wishlist_for_woocommerce_framework_return_dependency_data( $show, $hide, $relation );
 			}
 			?>
-			<li class="qodef-tab-item-nav-item <?php echo esc_attr( implode( ' ', $item_class ) ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $dependency_data, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+			<li class="qodef-tab-item-nav-item <?php echo esc_attr( implode( ' ', $item_class ) ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $dependency_data, true ); ?>>
 				<a href="#qodef-tab-<?php echo esc_attr( sanitize_title( $child->get_title() ) ); ?>" rel="noopener noreferrer"><?php echo esc_html( $child->get_title() ); ?></a>
 			</li>
 		<?php } ?>

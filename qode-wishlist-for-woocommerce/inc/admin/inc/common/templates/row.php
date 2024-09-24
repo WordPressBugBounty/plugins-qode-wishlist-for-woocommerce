@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="qodef-row-wrapper col-12 <?php echo esc_attr( $class ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $dependency_data, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<div class="qodef-row-wrapper col-12 <?php echo esc_attr( $class ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $dependency_data, true ); ?>>
 	<div class="qodef-row-wrapper-inner">
 		<div class="row">
 			<?php
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$row_description = $this_object->get_description();
 			if ( ! empty( $row_description ) ) {
 				?>
-				<p class="qodef-description qodef-row-description col-12"><?php echo esc_html( $row_description ); ?></p>
+				<p class="qodef-description qodef-row-description col-12"><?php echo wp_kses_post( $row_description ); ?></p>
 			<?php } ?>
 			<?php
 			foreach ( $this_object->get_children() as $child ) {

@@ -124,7 +124,7 @@ abstract class Qode_Wishlist_For_WooCommerce_Framework_Field_Type {
 
 	public function render() {
 		?>
-		<div class="<?php echo esc_attr( $this->params['class'] ); ?>" id="qodef_<?php echo esc_attr( $this->params['id'] ); ?>" <?php echo qode_wishlist_for_woocommerce_get_inline_attrs( $this->params['dependency_data'], true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<div class="<?php echo esc_attr( $this->params['class'] ); ?>" id="qodef_<?php echo esc_attr( $this->params['id'] ); ?>" <?php qode_wishlist_for_woocommerce_inline_attrs( $this->params['dependency_data'], true ); ?>>
 			<div class="qodef-field-section">
 				<?php if ( '' !== $this->title || '' !== $this->description ) { ?>
 					<div class="qodef-field-desc">
