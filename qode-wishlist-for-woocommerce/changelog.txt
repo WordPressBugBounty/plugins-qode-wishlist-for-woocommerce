@@ -1,5 +1,9 @@
 *** QODE Wishlist for WooCommerce Changelog ***
 
+2024-10-14 - version 1.2.3
+* Improved framework
+* Minor fixes
+
 2024-09-24 - version 1.2.2
 * Improved QODE framework
 * Improved WordPress coding standards
