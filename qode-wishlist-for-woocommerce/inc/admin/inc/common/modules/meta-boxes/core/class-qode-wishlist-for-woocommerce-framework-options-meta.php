@@ -92,7 +92,7 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Meta extends Qode_Wishlist
 			}
 		}
 
-		$post_types = apply_filters( 'qode_wishlist_for_woocommerce_filter_framework_meta_box_save', array( 'product' ) );
+		$post_types = apply_filters( 'qode_wishlist_for_woocommerce_filter_framework_meta_box_save', array( 'post', 'page' ) );
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
@@ -121,17 +121,6 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Meta extends Qode_Wishlist
 		}
 	}
 
-	public function sanitize_array_option( $value ) {
-
-		if ( strpos( $value, '<svg' ) !== false || strpos( $value, '<br' ) !== false ) {
-			$sanitized_value = wp_kses_post( $value );
-		} else {
-			$sanitized_value = _sanitize_text_fields( $value, false );
-		}
-
-		return apply_filters( 'sanitize_text_field', $sanitized_value, $value );
-	}
-
 	public function sanitize_meta_option( $value ) {
 		$sanitized_value = '';
 		$trim_value      = ! is_array( $value ) ? trim( $value ) !== '' : ! empty( array_filter( $value ) );
@@ -139,7 +128,7 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Meta extends Qode_Wishlist
 		if ( ( ! empty( $value ) || '0' === $value || 0 === $value ) && $trim_value ) {
 
 			if ( is_array( $value ) ) {
-				$sanitized_value = map_deep( wp_unslash( $value ), array( $this, 'sanitize_array_option' ) );
+				$sanitized_value = map_deep( wp_unslash( $value ), 'sanitize_text_field' );
 			} elseif ( strpos( $value, '<svg' ) !== false ) {
 				// Prevent sanitizing value in order to save svg option. We already escaped svg with our function.
 				$sanitized_value = $value;
@@ -152,10 +141,8 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Meta extends Qode_Wishlist
 	}
 
 	public function enqueue_framework_meta_scripts() {
-		$post_types = apply_filters( 'qode_wishlist_for_woocommerce_filter_framework_meta_box_save', array( 'product' ) );
-
 		// check if page is edit post page.
-		if ( function_exists( 'get_current_screen' ) && get_current_screen()->base === 'post' && in_array( get_current_screen()->post_type, $post_types, true ) ) {
+		if ( function_exists( 'get_current_screen' ) && get_current_screen()->base === 'post' ) {
 			$this->enqueue_dashboard_framework_scripts();
 
 			do_action( 'qode_wishlist_for_woocommerce_action_framework_page_additional_scripts' );
@@ -163,13 +150,8 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Meta extends Qode_Wishlist
 	}
 
 	public function add_admin_body_classes( $classes ) {
-		$post_types = apply_filters( 'qode_wishlist_for_woocommerce_filter_framework_meta_box_save', array( 'product' ) );
-
-		if ( function_exists( 'get_current_screen' ) && get_current_screen()->base === 'post' && in_array( get_current_screen()->post_type, $post_types, true ) ) {
-
-			if ( false !== strpos( $classes, 'qodef-framework-admin' ) ) {
-				$classes = $classes . ' qodef-framework-admin';
-			}
+		if ( function_exists( 'get_current_screen' ) && get_current_screen()->base === 'post' ) {
+			$classes = $classes . ' qodef-framework-admin';
 		}
 
 		return $classes;

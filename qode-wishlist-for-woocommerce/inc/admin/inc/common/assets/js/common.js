@@ -28,6 +28,8 @@
 				qodefSelect2.init( $mainHolder );
 				qodefInitIconPicker.init( $mainHolder );
 
+				qodefPostFormatsDependency.init();
+
 				if ( $adminPageHolder.length ) {
 					qodefSearchOptions.init( $adminPageHolder );
 				}
@@ -40,6 +42,12 @@
 				// If there is no main holder, but there is a cpt holder, admin needs to reinit for header and navigation.
 				qodefAdminOptionsPanel.adminReInit();
 			}
+		}
+	);
+
+	$( window ).load(
+		function () {
+			qodefPostFormatsDependency.init( true );
 		}
 	);
 
@@ -70,12 +78,8 @@
 	$( document ).on(
 		'widget-added widget-updated',
 		function ( event, widget ) {
-			var $widgetID = typeof widget !== 'undefined' ? widget.find( '[name="id_base"]' ) : '';
-
-			if ( $widgetID && $widgetID.val().includes( 'wishlist' ) ) {
-				qodefWidgetFields.initColorPicker( widget );
-				qodefWidgetFields.initDependency( widget );
-			}
+			qodefWidgetFields.initColorPicker( widget );
+			qodefWidgetFields.initDependency( widget );
 		}
 	);
 
@@ -83,23 +87,23 @@
 		'ajaxSuccess',
 		function ( event, xhr, options ) {
 
-			// Edit tags dashboard page event.
-			if ( options && options.data && -1 !== options.data.indexOf( 'action=add-tag' ) ) {
-				var $colorFields = $( '.qodef-field-color' );
+			if ( options && options.data && -1 === options.data.indexOf( 'action=add-tag' ) ) {
+				return;
+			}
 
-				if ( $colorFields.length ) {
-					$colorFields.each(
-						function () {
-							var clearButton = $( this ).find( '.wp-picker-clear' );
+			var $colorFields = $( '.qodef-field-color' );
+			if ( $colorFields.length ) {
+				$colorFields.each(
+					function () {
+						var clearButton = $( this ).find( '.wp-picker-clear' );
 
-							if ( clearButton.length ) {
-								clearButton.trigger(
-									'click'
-								);
-							}
+						if ( clearButton.length ) {
+							clearButton.trigger(
+								'click'
+							);
 						}
-					);
-				}
+					}
+				);
 			}
 		}
 	);
@@ -1532,6 +1536,135 @@
 	};
 
 	qodefFramework.qodefInitIconPicker = qodefInitIconPicker;
+
+	var qodefPostFormatsDependency = {
+		init: function ( onLoad ) {
+			if ( onLoad ) {
+				qodefPostFormatsDependency.initObserver();
+				qodefPostFormatsDependency.gutenbergEditor();
+			} else {
+				qodefPostFormatsDependency.classicEditor();
+			}
+		},
+		initObserver: function () {
+			var $holder = $( '.edit-post-sidebar' );
+
+			if ( $holder.length ) {
+				var mutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+
+				// create mutation observer prototype for class changes.
+				$.fn.attrChange = function ( attrChangeCallback ) {
+					if ( mutationObserver ) {
+						var options = {
+							attributes: true,
+							attributeFilter: ['class'],
+							subtree: false,
+						};
+
+						var observer = new mutationObserver(
+							function ( mutations ) {
+								mutations.forEach(
+									function ( event ) {
+										attrChangeCallback.call( event.target );
+									}
+								);
+							}
+						);
+
+						return this.each(
+							function () {
+								observer.observe(
+									this,
+									options
+								);
+							}
+						);
+					}
+				};
+
+				// append event listener.
+				$holder.find( '.edit-post-sidebar__panel-tabs ul li:first-child button' ).attrChange(
+					function () {
+						if ( $( this ).hasClass( 'is-active' ) ) {
+							qodefPostFormatsDependency.gutenbergEditor();
+						}
+					}
+				);
+			}
+		},
+		classicEditor: function () {
+			var $holder          = $( '#post-formats-select' ),
+				$postFormats     = $holder.find( 'input[name="post_format"]' ),
+				$selectedFormat  = $holder.find( 'input[name="post_format"]:checked' ),
+				selectedFormatID = $selectedFormat.attr( 'id' );
+
+			// This is temporary case - waiting ui style.
+			$postFormats.each(
+				function () {
+					qodefPostFormatsDependency.metaBoxVisibility(
+						false,
+						$( this ).attr( 'id' )
+					);
+				}
+			);
+
+			qodefPostFormatsDependency.metaBoxVisibility(
+				true,
+				selectedFormatID
+			);
+
+			$postFormats.change(
+				function () {
+					qodefPostFormatsDependency.classicEditor();
+				}
+			);
+		},
+		gutenbergEditor: function () {
+			var $holder = $( '.edit-post-sidebar' );
+
+			if ( $holder.length ) {
+				var $postFormats    = $holder.find( '.editor-post-format' ),
+					$selectedFormat = $postFormats.find( 'select option:selected' );
+
+				$postFormats.find( 'select option' ).each(
+					function () {
+						qodefPostFormatsDependency.metaBoxVisibility(
+							false,
+							'post_format_' + $( this ).val()
+						);
+					}
+				);
+
+				if ( $selectedFormat.length ) {
+					qodefPostFormatsDependency.metaBoxVisibility(
+						true,
+						'post_format_' + $selectedFormat.val()
+					);
+				}
+
+				$postFormats.find( 'select' ).one(
+					'change',
+					function () {
+						qodefPostFormatsDependency.gutenbergEditor();
+					}
+				);
+			}
+		},
+		metaBoxVisibility: function ( visibility, itemID ) {
+			if ( itemID !== '' && itemID !== undefined ) {
+				var postFormatName = itemID.replace(
+					/-/g,
+					'_'
+				);
+
+				if ( visibility ) {
+					$( '.qodef-section-name-qodef_' + postFormatName + '_section' ).fadeIn();
+				} else {
+					$( '.qodef-section-name-qodef_' + postFormatName + '_section' ).hide();
+				}
+			}
+		}
+	};
 
 	var qodefAddressFields = {
 		init: function ( $mainHolder, trigger ) {
