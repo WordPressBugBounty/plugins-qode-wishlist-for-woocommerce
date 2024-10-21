@@ -119,6 +119,9 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Repeater_Inner implements Qo
 							foreach ( $this->value as $row ) {
 								?>
 								<div class="qodef-repeater-inner-fields-holder qodef-second-level clearfix" data-index="<?php echo esc_attr( $counter ); ?>">
+									<h4 class="qodef-repeater-fields-label">
+										<?php echo esc_html__( 'Item ', 'qode-wishlist-for-woocommerce' ) . esc_html( $counter + 1 ); ?>
+									</h4>
 									<div class="qodef-repeater-inner-fields">
 										<?php
 										foreach ( $this->children as $child ) {
@@ -143,6 +146,11 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Repeater_Inner implements Qo
 										?>
 									</div>
 									<div class="qodef-repeater-actions-holder">
+										<div class="qodef-repeater-toggle">
+											<a class="qodef-row-toggle" href="#">
+												<?php qode_wishlist_for_woocommerce_framework_svg_icon( 'toggle' ); ?>
+											</a>
+										</div>
 										<div class="qodef-repeater-inner-sort">
 											<?php qode_wishlist_for_woocommerce_framework_svg_icon( 'expand' ); ?>
 										</div>
@@ -172,6 +180,9 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Repeater_Inner implements Qo
 		?>
 		<script type="text/html" class="qodef-repeater-template" id="tmpl-qodef-repeater-inner-template-<?php echo esc_attr( str_replace( '_', '-', $this->name ) ); ?>">
 			<div class="qodef-repeater-inner-fields-holder <?php echo esc_attr( $this->params['sortable_class'] ); ?> clearfix" data-index="{{{ data.rowInnerIndex }}}">
+				<h4 class="qodef-repeater-fields-label">
+					<?php echo esc_html__( 'Item ', 'qode-wishlist-for-woocommerce' ); ?> {{{ data.rowIndex+1 }}}
+				</h4>
 				<div class="qodef-repeater-inner-fields">
 					<?php
 					foreach ( $this->children as $child ) {
@@ -187,6 +198,11 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Repeater_Inner implements Qo
 					?>
 				</div>
 				<div class="qodef-repeater-actions-holder">
+					<div class="qodef-repeater-toggle">
+						<a class="qodef-row-toggle" href="#">
+							<?php qode_wishlist_for_woocommerce_framework_svg_icon( 'toggle' ); ?>
+						</a>
+					</div>
 					<div class="qodef-repeater-inner-sort">
 						<?php qode_wishlist_for_woocommerce_framework_svg_icon( 'expand' ); ?>
 					</div>
