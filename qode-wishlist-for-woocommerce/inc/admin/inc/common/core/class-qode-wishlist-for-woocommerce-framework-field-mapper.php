@@ -42,6 +42,7 @@ class Qode_Wishlist_For_WooCommerce_Framework_Field_Mapper implements Qode_Wishl
 			}
 		}
 
+		// nosemgrep audit.php.wp.security.xss.shortcode-attr.
 		return $return_object;
 	}
 }

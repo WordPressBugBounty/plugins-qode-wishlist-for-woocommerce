@@ -857,6 +857,11 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_update_wishlist_items' ) 
 			$items[ $table_name ]['table_title'] = $table_name_title;
 		}
 
+		// If user default wishlist table title is translated, set the new one.
+		if ( 'default' === $table_name && $items[ $table_name ]['table_title'] !== $table_name_title ) {
+			$items[ $table_name ]['table_title'] = $table_name_title;
+		}
+
 		if ( ! empty( $item_ids ) ) {
 			foreach ( $item_ids as $item_id ) {
 				$item_id = apply_filters( 'qode_wishlist_for_woocommerce_filter_item_id', qode_wishlist_for_woocommerce_get_original_product_id( $item_id ), $action, $table_name );

@@ -1,5 +1,11 @@
 *** QODE Wishlist for WooCommerce Changelog ***
 
+2024-12-04 - version 1.2.5
+* Added WordPress 6.7 support
+* Improved default Wishlist table title "My Wishlist" to be translatable
+* Updated pot files
+* Minor fixes
+
 2024-10-21 - version 1.2.4
 * Improved framework
 * Minor fixes

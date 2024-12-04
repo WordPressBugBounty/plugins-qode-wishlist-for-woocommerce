@@ -2,9 +2,9 @@
 Contributors: qodeinteractive
 Tags: wishlist, woocommerce wishlist, product wishlist, woocommerce, add to wishlist
 Requires at least: 6.3
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,11 +85,11 @@ The process of adding a product to a wishlist involves just a <strong>single but
 
 You have the option to limit the ability to create wishlists <strong>only to logged-in users</strong>, or you can keep this feature <strong>open to anyone</strong> visiting your website.
 
-Best of all, the <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce-premium/" target="_blank">QODE Wishlist for WooCommerce</a> plugin is completely optimized for mobile devices too.
+Best of all, the <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce/" target="_blank">QODE Wishlist for WooCommerce</a> plugin is completely optimized for mobile devices too.
 
 <h3>Customize Wishlist Pages to Fit Your Specific Style</h3>
 
-The <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce-premium/" target="_blank">QODE Wishlist for WooCommerce</a> plugin lets you alter a number of aspects of the Wishlist feature on your website.
+The <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce/" target="_blank">QODE Wishlist for WooCommerce</a> plugin lets you alter a number of aspects of the Wishlist feature on your website.
 
 You can choose a <strong>behavior type</strong> for the ‘Add to Wishlist’ button for items which are already added to a wishlist, you can choose a <strong>layout style</strong> for the wishlist element (icon, icon with tooltip, text), choose where you wish to <strong>position</strong> the "Add to Wishlist" button inside loops and product pages, customize the "Add to Wishlist" <strong>button appearance</strong> (labels, colors, icon & more), as well as <strong>modify the columns</strong> shown in wishlist tables.
 
@@ -144,7 +144,7 @@ Or you can install it directly from WordPress.org
 
 = Is there a premium version of the QODE Wishlist for WooCommerce plugin? =
 
-The QODE Wishlist for WooCommerce plugin comes in both free and Premium versions, with the latter offering lots more functionalities and features. You can see how the two versions stack one against another <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce-premium/" target="_blank">here</a>.
+The QODE Wishlist for WooCommerce plugin comes in both free and Premium versions, with the latter offering lots more functionalities and features. You can see how the two versions stack one against another <a href="https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce/" target="_blank">here</a>.
 
 = How do the visitors create wishlists using the QODE Wishlist plugin? =
 
@@ -221,6 +221,7 @@ Feel free to try out some of our other products:
 <a href="https://wordpress.org/plugins/qode-variation-swatches-for-woocommerce/">QODE Variation Swatches for WooCommerce</a>
 <a href="https://wordpress.org/plugins/qode-compare-for-woocommerce/">QODE Compare for WooCommerce</a>
 <a href="https://wordpress.org/plugins/qode-product-extra-options-for-woocommerce/">QODE Product Extra Options for WooCommerce</a>
+<a href="https://wordpress.org/plugins/qode-optimizer/">QODE Optimizer</a>
 
 == Screenshots ==
 
@@ -235,6 +236,12 @@ Feel free to try out some of our other products:
 9. Admin Wishlist Page Styles.
 
 == Changelog ==
+
+= 1.2.5 - 04-12-2024 =
+- Added WordPress 6.7 support
+- Improved default Wishlist table title "My Wishlist" to be translatable
+- Updated pot files
+- Minor fixes
 
 = 1.2.4 - 21-10-2024 =
 - Improved framework
