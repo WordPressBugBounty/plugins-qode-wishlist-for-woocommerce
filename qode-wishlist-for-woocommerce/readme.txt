@@ -4,7 +4,7 @@ Tags: wishlist, woocommerce wishlist, product wishlist, woocommerce, add to wish
 Requires at least: 6.3
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -236,6 +236,9 @@ Feel free to try out some of our other products:
 9. Admin Wishlist Page Styles.
 
 == Changelog ==
+
+= 1.2.6 - 21-01-2025 =
+- Changed the pro plugin URL to point to the WooCommerce marketplace
 
 = 1.2.5 - 04-12-2024 =
 - Added WordPress 6.7 support

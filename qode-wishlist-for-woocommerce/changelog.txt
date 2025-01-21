@@ -1,5 +1,8 @@
 *** QODE Wishlist for WooCommerce Changelog ***
 
+2025-01-21 - version 1.2.6
+* Changed the pro plugin URL to point to the WooCommerce marketplace
+
 2024-12-04 - version 1.2.5
 * Added WordPress 6.7 support
 * Improved default Wishlist table title "My Wishlist" to be translatable
