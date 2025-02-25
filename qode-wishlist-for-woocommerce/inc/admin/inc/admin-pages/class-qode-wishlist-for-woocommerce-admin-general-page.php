@@ -70,8 +70,19 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Admin_General_Page' ) ) {
 		public function plugin_action_links( $links ) {
 
 			if ( ! qode_wishlist_for_woocommerce_is_installed( 'wishlist-premium' ) ) {
+				$pro_plugin_url = 'https://qodeinteractive.com/products/plugins/qode-wishlist-for-woocommerce/?utm_source=dash&utm_medium=qodewishlist&utm_campaign=gopremium';
+
+				if ( file_exists( QODE_WISHLIST_FOR_WOOCOMMERCE_ABS_PATH . DIRECTORY_SEPARATOR . 'class-qode-wishlist-for-woocommerce.php' ) ) {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+					preg_match( '/(Woo:\s.*)/', file_get_contents( QODE_WISHLIST_FOR_WOOCOMMERCE_ABS_PATH . DIRECTORY_SEPARATOR . 'class-qode-wishlist-for-woocommerce.php' ), $is_woocommerce_market );
+
+					if ( ! empty( $is_woocommerce_market ) ) {
+						$pro_plugin_url = 'https://woocommerce.com/products/qode-wishlist-for-woocommerce-pro/';
+					}
+				}
+
 				// translators: 1. Premium plugin url.
-				$links['premium'] = sprintf( '<a href="%1$s" target="_blank" class="qode-wishlist-for-woocommerce-premium-link" style="color:#ee2852;font-weight:700">%2$s</a>', 'https://woocommerce.com/products/qode-wishlist-for-woocommerce-pro/', esc_html__( 'Upgrade', 'qode-wishlist-for-woocommerce' ) );
+				$links['premium'] = sprintf( '<a href="%1$s" target="_blank" class="qode-wishlist-for-woocommerce-premium-link" style="color:#ee2852;font-weight:700">%2$s</a>', esc_url( $pro_plugin_url ), esc_html__( 'Upgrade', 'qode-wishlist-for-woocommerce' ) );
 			}
 
 			return $links;
