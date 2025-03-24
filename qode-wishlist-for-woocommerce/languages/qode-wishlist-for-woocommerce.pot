@@ -1,15 +1,15 @@
-# Copyright (C) 2024 Qode Interactive
+# Copyright (C) 2025 Qode Interactive
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: QODE Wishlist for WooCommerce 1.2.5\n"
+"Project-Id-Version: QODE Wishlist for WooCommerce 1.2.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/qode-wishlist-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-18T11:29:05+01:00\n"
+"POT-Creation-Date: 2025-03-24T13:19:27+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: qode-wishlist-for-woocommerce\n"
@@ -226,7 +226,7 @@ msgid "No"
 msgstr ""
 
 #: inc/admin/class-qode-wishlist-for-woocommerce-framework.php:57
-#: inc/wishlist/class-qode-wishlist-for-woocommerce-wishlist-template.php:45
+#: inc/wishlist/class-qode-wishlist-for-woocommerce-wishlist-template.php:46
 msgid "Wishlist"
 msgstr ""
 
@@ -318,7 +318,7 @@ msgid "Qode WooCommerce Plugins"
 msgstr ""
 
 #. translators: 1. Premium plugin url.
-#: inc/admin/inc/admin-pages/class-qode-wishlist-for-woocommerce-admin-general-page.php:74
+#: inc/admin/inc/admin-pages/class-qode-wishlist-for-woocommerce-admin-general-page.php:85
 #: inc/admin/inc/admin-pages/options-custom-pages/helper.php:10
 #: inc/admin/inc/admin-pages/options-custom-pages/qode-products/helper.php:96
 msgid "Upgrade"
@@ -953,7 +953,7 @@ msgstr ""
 msgid "Please upload a valid SVG file."
 msgstr ""
 
-#: inc/wishlist/class-qode-wishlist-for-woocommerce-wishlist-template.php:65
+#: inc/wishlist/class-qode-wishlist-for-woocommerce-wishlist-template.php:70
 #: inc/wishlist/shortcodes/wishlist-table/dashboard/admin/wishlist-table-options.php:21
 #: inc/wishlist/shortcodes/wishlist-table/dashboard/admin/wishlist-table-options.php:46
 msgid "Wishlist Page"

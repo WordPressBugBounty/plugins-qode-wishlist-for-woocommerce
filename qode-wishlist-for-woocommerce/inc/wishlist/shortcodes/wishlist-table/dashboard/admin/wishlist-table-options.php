@@ -24,7 +24,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_add_wishlist_page_templat
 		);
 
 		if ( $page ) {
-			$get_page_id = get_transient( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE );
+			$get_page_id = get_option( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE );
 
 			$general_tab = $page->add_tab_element(
 				array(

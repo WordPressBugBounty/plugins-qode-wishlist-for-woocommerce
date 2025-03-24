@@ -35,9 +35,10 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Wishlist_Template' ) ) {
 		}
 
 		public function create_page_template() {
-			$get_page_id = get_transient( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE );
+			$get_page_id    = get_option( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE );
+			$creating_count = (int) get_option( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE . '_count', 0 );
 
-			if ( empty( $get_page_id ) ) {
+			if ( empty( $get_page_id ) && $creating_count < 3 ) {
 				$page_template_args = array(
 					'post_status'    => 'publish',
 					'post_type'      => 'page',
@@ -50,11 +51,15 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Wishlist_Template' ) ) {
 
 				$the_page_id = wp_insert_post( $page_template_args );
 
-				if ( ! empty( $the_page_id ) ) {
-					set_transient( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE, $the_page_id );
+				if ( ! is_wp_error( $the_page_id ) ) {
+					update_option( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE, $the_page_id );
 
 					flush_rewrite_rules();
 				}
+
+				$creating_count++;
+
+				update_option( QODE_WISHLIST_FOR_WOOCOMMERCE_PAGE_TEMPLATE . '_count', $creating_count );
 			}
 		}
 

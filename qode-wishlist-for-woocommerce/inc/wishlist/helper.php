@@ -36,7 +36,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_wishlist_page_id' ) )
 	function qode_wishlist_for_woocommerce_get_wishlist_page_id() {
 		$wishlist_page_id = qode_wishlist_for_woocommerce_get_option_value( 'admin', 'qode_wishlist_for_woocommerce_page_template' );
 
-		return (int) apply_filters( 'wpml_object_id', $wishlist_page_id, 'page', true );
+		return ! empty( $wishlist_page_id ) ? (int) apply_filters( 'wpml_object_id', $wishlist_page_id, 'page', true ) : 0;
 	}
 }
 

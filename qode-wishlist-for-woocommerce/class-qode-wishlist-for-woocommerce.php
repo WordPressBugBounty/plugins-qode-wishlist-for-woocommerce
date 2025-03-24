@@ -5,11 +5,11 @@ Description: Qode Wishlist for WooCommerce plugin is the ideal toolkit for letti
 Author: Qode Interactive
 Author URI: https://qodeinteractive.com/
 Plugin URI: https://qodeinteractive.com/qode-wishlist-for-woocommerce/
-Version: 1.2.6
+Version: 1.2.7
 Requires at least: 6.3
 Requires PHP: 7.4
 WC requires at least: 7.6
-WC tested up to: 9.4
+WC tested up to: 9.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Text Domain: qode-wishlist-for-woocommerce
