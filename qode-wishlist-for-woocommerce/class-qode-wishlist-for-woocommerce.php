@@ -5,11 +5,11 @@ Description: Qode Wishlist for WooCommerce plugin is the ideal toolkit for letti
 Author: Qode Interactive
 Author URI: https://qodeinteractive.com/
 Plugin URI: https://qodeinteractive.com/qode-wishlist-for-woocommerce/
-Version: 1.2.7
+Version: 1.2.8
 Requires at least: 6.3
 Requires PHP: 7.4
 WC requires at least: 7.6
-WC tested up to: 9.6
+WC tested up to: 10.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Text Domain: qode-wishlist-for-woocommerce
@@ -33,16 +33,15 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce' ) ) {
 
 			require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ABS_PATH . '/helpers/helper.php';
 
-			// Include framework file.
+			// Include a framework file.
 			require_once QODE_WISHLIST_FOR_WOOCOMMERCE_ADMIN_PATH . '/class-qode-wishlist-for-woocommerce-framework.php';
 
 			// Check if WooCommerce is installed.
 			if ( function_exists( 'WC' ) ) {
+				// Make plugin available for translation.
+				add_action( 'init', array( $this, 'load_plugin_text_domain' ) );
 
-				// Make plugin available for translation (permission 15 is set in order to be after the plugin initialization).
-				add_action( 'plugins_loaded', array( $this, 'load_plugin_text_domain' ), 15 );
-
-				// Add plugin's body classes.
+				// Add the plugin's body classes.
 				add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 
 				// Enqueue plugin's assets.
@@ -59,7 +58,7 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce' ) ) {
 		}
 
 		/**
-		 * Instance of module class
+		 * Instance of a module class
 		 *
 		 * @return Qode_Wishlist_For_WooCommerce
 		 */
@@ -126,14 +125,14 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce' ) ) {
 		}
 
 		public function include_modules() {
-			// Hook to include additional element before modules inclusion.
+			// Hook to include an additional element before module inclusion.
 			do_action( 'qode_wishlist_for_woocommerce_action_before_include_modules' );
 
 			foreach ( glob( QODE_WISHLIST_FOR_WOOCOMMERCE_INC_PATH . '/*/include.php' ) as $module ) {
 				include_once $module;
 			}
 
-			// Hook to include additional element after modules inclusion.
+			// Hook to include an additional element after module inclusion.
 			do_action( 'qode_wishlist_for_woocommerce_action_after_include_modules' );
 		}
 	}
@@ -152,7 +151,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_init_plugin' ) ) {
 
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_activation_trigger' ) ) {
 	/**
-	 * Function that trigger hooks on plugin activation
+	 * Function that triggers hooks on plugin activation
 	 */
 	function qode_wishlist_for_woocommerce_activation_trigger() {
 		// Schedule a daily check for guest Wishlist visibility expiration.
@@ -169,7 +168,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_activation_trigger' ) ) {
 
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_deactivation_trigger' ) ) {
 	/**
-	 * Function that trigger hooks on plugin deactivation
+	 * Function that triggers hooks on plugin deactivation
 	 */
 	function qode_wishlist_for_woocommerce_deactivation_trigger() {
 		// Clear schedule daily check for guest Wishlist visibility expiration.
@@ -184,7 +183,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_deactivation_trigger' ) )
 
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_check_requirements' ) ) {
 	/**
-	 * Function that check plugin requirements
+	 * Function that checks plugin requirements
 	 */
 	function qode_wishlist_for_woocommerce_check_requirements() {
 		if ( ! function_exists( 'WC' ) ) {
@@ -197,7 +196,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_check_requirements' ) ) {
 
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_admin_notice_content' ) ) {
 	/**
-	 * Function that display the error message if the requirements are not met
+	 * Function that displays the error message if the requirements are not met
 	 */
 	function qode_wishlist_for_woocommerce_admin_notice_content() {
 		printf( '<div class="notice notice-error"><p>%s</p></div>', esc_html__( 'WooCommerce plugin is required for QODE Wishlist for WooCommerce plugin to work properly. Please install/activate it first.', 'qode-wishlist-for-woocommerce' ) );

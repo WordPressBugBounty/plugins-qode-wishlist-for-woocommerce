@@ -113,6 +113,16 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_wishlist_table_item_callb
 			if ( empty( $item_ids ) || empty( $action ) ) {
 				qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'Item IDs or action are invalid.', 'qode-wishlist-for-woocommerce' ) );
 			} else {
+
+				if ( ! empty( $token ) ) {
+					$token_wishlist_items = qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $token );
+
+					if ( ! isset( $token_wishlist_items['user'] ) || ! in_array( $token_wishlist_items['user'], array( 'guest', get_current_user_id() ), true ) ) {
+						qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
+						wp_die( esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
+					}
+				}
+
 				// Update wishlist items.
 				qode_wishlist_for_woocommerce_update_wishlist_items( $item_ids, $action, $table, $token );
 

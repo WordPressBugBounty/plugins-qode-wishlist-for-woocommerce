@@ -1,5 +1,8 @@
 *** QODE Wishlist for WooCommerce Changelog ***
 
+2025-11-25 - version 1.2.8
+* Improved shared Wishlist functionality
+
 2025-03-24 - version 1.2.7
 * Improved default Wishlist page creating
 * Updated pot files
