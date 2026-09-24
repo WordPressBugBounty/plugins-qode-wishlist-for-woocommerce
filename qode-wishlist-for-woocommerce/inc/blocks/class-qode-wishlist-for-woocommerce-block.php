@@ -108,13 +108,15 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Block' ) ) {
 					// phpcs:ignore WordPress.WP.EnqueuedResourceParameters
 					wp_register_script( 'qode-wishlist-for-woocommerce-blocks-' . $block_name, $block_url_path . '.min.js', $editor_script_dependency );
 
-					wp_localize_script(
-						'qode-wishlist-for-woocommerce-blocks-' . $block_name,
-						'qodeWishlistForWooCommerceAdminGlobal',
-						array(
-							'product_list' => qode_wishlist_for_woocommerce_get_cpt_items(),
-						)
-					);
+					if ( qode_wishlist_for_woocommerce_needs_editor_product_list() ) {
+						wp_localize_script(
+							'qode-wishlist-for-woocommerce-blocks-' . $block_name,
+							'qodeWishlistForWooCommerceAdminGlobal',
+							array(
+								'product_list' => qode_wishlist_for_woocommerce_get_cpt_items(),
+							)
+						);
+					}
 
 					// Set block editor script.
 					$this->set_block_editor_script( 'qode-wishlist-for-woocommerce-blocks-' . $block_name );

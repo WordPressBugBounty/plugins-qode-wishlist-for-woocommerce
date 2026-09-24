@@ -131,7 +131,7 @@ if ( class_exists( 'Qode_Wishlist_For_WooCommerce_Shortcode' ) ) {
 			$atts['items']      = ! empty( $atts['forward_items'] ) ? json_decode( sanitize_text_field( wp_unslash( $atts['forward_items'] ) ), true ) : qode_wishlist_for_woocommerce_get_wishlist_items_by_table( $atts['table_name'] );
 
 			// Additional check if multi wishlist is active and default wishlist is empty, show items from first filled wishlist.
-			if ( apply_filters( 'qode_wishlist_for_woocommerce_filter_is_multi_wishlist_on', false ) && 'yes' !== $atts['is_print_template'] && empty( $atts['items'] ) ) {
+			if ( apply_filters( 'qode_wishlist_for_woocommerce_filter_is_multi_wishlist_on', false ) && 'yes' !== $atts['is_print_template'] && empty( $atts['items'] ) && 'default' === $atts['table_name'] ) {
 				$other_wishlists = qode_wishlist_for_woocommerce_get_cleaned_wishlist_tables( $atts['all_items'] );
 
 				if ( ! empty( $other_wishlists ) ) {

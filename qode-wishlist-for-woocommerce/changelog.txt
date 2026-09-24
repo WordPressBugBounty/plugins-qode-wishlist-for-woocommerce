@@ -1,5 +1,9 @@
 *** QODE Wishlist for WooCommerce Changelog ***
 
+2026-09-24 - version 1.2.9
+* Improved frontend performance by skipping editor-only product queries and admin option map on storefront requests
+* Fixed wrong items being displayed when multi-wishlist is enabled and a custom wishlist is empty
+
 2025-11-25 - version 1.2.8
 * Improved shared Wishlist functionality
 

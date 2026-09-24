@@ -641,6 +641,29 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_users' ) ) {
 	}
 }
 
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_needs_editor_product_list' ) ) {
+	/**
+	 * Whether the current request needs a full product list for editor dropdowns.
+	 * Storefront render uses shortcode/block attributes, not this list.
+	 *
+	 * @return bool
+	 */
+	function qode_wishlist_for_woocommerce_needs_editor_product_list() {
+		$needs_list = is_admin();
+
+		if ( ! $needs_list ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$needs_list = isset( $_GET['vc_editable'] ) || isset( $_GET['vc_action'] );
+		}
+
+		if ( ! $needs_list && function_exists( 'vc_is_inline' ) ) {
+			$needs_list = vc_is_inline();
+		}
+
+		return apply_filters( 'qode_wishlist_for_woocommerce_filter_needs_editor_product_list', $needs_list );
+	}
+}
+
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_cpt_items' ) ) {
 	/**
 	 * Returns array of custom post items
@@ -652,6 +675,18 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_cpt_items' ) ) {
 	 * @return array
 	 */
 	function qode_wishlist_for_woocommerce_get_cpt_items( $cpt_slug = 'product', $args = array(), $enable_default = true ) {
+		if ( ! qode_wishlist_for_woocommerce_needs_editor_product_list() ) {
+			return $enable_default ? array( '' => esc_html__( 'Default', 'qode-wishlist-for-woocommerce' ) ) : array();
+		}
+
+		static $items_cache = array();
+
+		$cache_key = md5( wp_json_encode( array( $cpt_slug, $args, (bool) $enable_default ) ) );
+
+		if ( isset( $items_cache[ $cache_key ] ) ) {
+			return $items_cache[ $cache_key ];
+		}
+
 		$options    = array();
 		$query_args = array(
 			'post_status'    => 'publish',
@@ -682,6 +717,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_cpt_items' ) ) {
 		}
 
 		wp_reset_postdata();
+
+		$items_cache[ $cache_key ] = $options;
 
 		return $options;
 	}

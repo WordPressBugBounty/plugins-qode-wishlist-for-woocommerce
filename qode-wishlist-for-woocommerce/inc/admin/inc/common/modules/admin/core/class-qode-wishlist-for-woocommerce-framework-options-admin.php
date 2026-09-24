@@ -96,10 +96,23 @@ class Qode_Wishlist_For_WooCommerce_Framework_Options_Admin extends Qode_Wishlis
 	}
 
 	public function init_options() {
+		$stored = get_option( $this->get_options_name() );
+
+		// Frontend only needs saved values. Building the admin field map is for settings screens
+		// and for seeding defaults when the option has never been stored.
+		if ( ! is_admin() && false !== $stored ) {
+			if ( is_array( $stored ) ) {
+				$this->set_options( $stored );
+			}
+
+			do_action( 'qode_wishlist_for_woocommerce_action_framework_after_options_init_' . $this->get_options_name(), $this->get_options_name() );
+
+			return;
+		}
 
 		do_action( 'qode_wishlist_for_woocommerce_action_framework_before_options_init_' . $this->get_options_name(), $this->get_options_name() );
 
-		if ( ! get_option( $this->get_options_name() ) ) {
+		if ( false === $stored ) {
 			add_option( $this->get_options_name(), $this->get_options() );
 		}
 
