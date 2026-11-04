@@ -444,7 +444,9 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Wishlist_Module' ) ) {
 
 				if ( ! empty( $get_svg_content ) ) {
 
-					if ( class_exists( 'enshrined\svgSanitize\Sanitizer' ) ) {
+					if ( ! class_exists( 'enshrined\svgSanitize\Sanitizer' ) ) {
+						$file['error'] = esc_html__( 'SVG uploads require the SVG sanitizer library.', 'qode-wishlist-for-woocommerce' );
+					} else {
 						// Create a new sanitizer instance.
 						$sanitizer = new enshrined\svgSanitize\Sanitizer();
 
@@ -452,12 +454,12 @@ if ( ! class_exists( 'Qode_Wishlist_For_WooCommerce_Wishlist_Module' ) ) {
 						$clean_svg_content = $sanitizer->sanitize( $get_svg_content );
 
 						if ( empty( $clean_svg_content ) ) {
-							$clean_svg_content = '';
+							$file['error'] = esc_html__( 'Please upload a valid SVG file.', 'qode-wishlist-for-woocommerce' );
+						} else {
+							// Update clean SVG/XML data.
+							// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+							@file_put_contents( $file['tmp_name'], $clean_svg_content );
 						}
-
-						// Update clean SVG/XML data.
-						// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-						@file_put_contents( $file['tmp_name'], $clean_svg_content );
 					}
 				} else {
 					$file['error'] = esc_html__( 'Please upload a valid SVG file.', 'qode-wishlist-for-woocommerce' );

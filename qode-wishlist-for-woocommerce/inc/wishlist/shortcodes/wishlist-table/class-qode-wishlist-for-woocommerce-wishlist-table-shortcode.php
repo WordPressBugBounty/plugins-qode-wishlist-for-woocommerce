@@ -128,7 +128,13 @@ if ( class_exists( 'Qode_Wishlist_For_WooCommerce_Shortcode' ) ) {
 			$atts['layout']     = apply_filters( 'qode_wishlist_for_woocommerce_filter_wishlist_table_default_layout', 'table' );
 			$atts['table_name'] = ! empty( $get_table_name ) ? $get_table_name : 'default';
 			$atts['all_items']  = qode_wishlist_for_woocommerce_get_wishlist_items( true );
-			$atts['items']      = ! empty( $atts['forward_items'] ) ? json_decode( sanitize_text_field( wp_unslash( $atts['forward_items'] ) ), true ) : qode_wishlist_for_woocommerce_get_wishlist_items_by_table( $atts['table_name'] );
+			$atts['items']      = qode_wishlist_for_woocommerce_get_wishlist_items_by_table( $atts['table_name'] );
+			if ( ! empty( $atts['forward_items'] ) ) {
+				$forward_items = json_decode( wp_unslash( $atts['forward_items'] ), true );
+				if ( is_array( $forward_items ) ) {
+					$atts['items'] = qode_wishlist_for_woocommerce_sanitize_wishlist_table( $forward_items );
+				}
+			}
 
 			// Additional check if multi wishlist is active and default wishlist is empty, show items from first filled wishlist.
 			if ( apply_filters( 'qode_wishlist_for_woocommerce_filter_is_multi_wishlist_on', false ) && 'yes' !== $atts['is_print_template'] && empty( $atts['items'] ) && 'default' === $atts['table_name'] ) {
@@ -151,6 +157,7 @@ if ( class_exists( 'Qode_Wishlist_For_WooCommerce_Shortcode' ) ) {
 			$atts['holder_classes']    = $this->get_holder_classes( $atts );
 			$atts['products_per_page'] = ! empty( $atts['products_per_page'] ) ? esc_attr( $atts['products_per_page'] ) : apply_filters( 'qode_wishlist_for_woocommerce_filter_wishlist_table_default_products_per_page', get_option( 'posts_per_page' ) );
 			$atts['table_title']       = 'no' !== $show_table_title_option ? ( '' !== $atts['table_title'] ? $atts['table_title'] : $atts['all_items'][ $atts['table_name'] ]['table_title'] ?? '' ) : '';
+			$atts['table_title']       = qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( $atts['table_title'] );
 			$atts['table_title_tag']   = ! empty( $atts['table_title_tag'] ) ? $atts['table_title_tag'] : ( $table_title_tag_option ?? 'h3' );
 
 			$atts['shortcode_atts'] = qode_wishlist_for_woocommerce_get_wishlist_table_shortcode_atts( $atts['items'], $atts );

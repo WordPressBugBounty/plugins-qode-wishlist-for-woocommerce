@@ -854,7 +854,7 @@
 		handleConfirmBox: function ( message, simple_modal ) {
 			var $confirmModal = $( simple_modal ? qodeWishlistForWooCommerceGlobal.confirmSimpleModalHTML : qodeWishlistForWooCommerceGlobal.confirmModalHTML );
 
-			$confirmModal.find( '.qwfw-m-form-title' ).empty().html( message );
+			$confirmModal.find( '.qwfw-m-form-title' ).empty().text( message );
 
 			document.body.appendChild( $confirmModal[0] );
 

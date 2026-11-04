@@ -120,13 +120,17 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_set_cookie' ) ) {
 	 *
 	 * @return bool
 	 */
-	function qode_wishlist_for_woocommerce_set_cookie( $name, $value = array(), $expire = null, $secure = false, $httponly = false ) {
+	function qode_wishlist_for_woocommerce_set_cookie( $name, $value = array(), $expire = null, $secure = null, $httponly = true ) {
 
 		if ( ! apply_filters( 'qode_wishlist_for_woocommerce_filter_set_cookie', true ) || empty( $name ) ) {
 			return false;
 		}
 
 		$expire = ! empty( $expire ) ? $expire : ( time() + qode_wishlist_for_woocommerce_get_cookie_expiration() );
+
+		if ( null === $secure ) {
+			$secure = is_ssl();
+		}
 
 		$value = wp_json_encode( stripslashes_deep( $value ) );
 
@@ -146,11 +150,22 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_cookie' ) ) {
 	 * @return mixed
 	 */
 	function qode_wishlist_for_woocommerce_get_cookie( $name ) {
-		if ( isset( $_COOKIE[ $name ] ) ) {
-			return json_decode( sanitize_text_field( wp_unslash( $_COOKIE[ $name ] ) ), true );
+		if ( ! isset( $_COOKIE[ $name ] ) ) {
+			return array();
 		}
 
-		return array();
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON is decoded, then field-sanitized.
+		$raw = wp_unslash( $_COOKIE[ $name ] );
+		if ( ! is_string( $raw ) || '' === $raw ) {
+			return array();
+		}
+
+		$decoded = json_decode( $raw, true );
+		if ( ! is_array( $decoded ) ) {
+			return array();
+		}
+
+		return qode_wishlist_for_woocommerce_sanitize_wishlist_items( $decoded, true );
 	}
 }
 
@@ -178,6 +193,283 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_generate_token' ) ) {
 	}
 }
 
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_sanitize_wishlist_token' ) ) {
+	/**
+	 * Allow only compact server-style wishlist tokens.
+	 *
+	 * @param mixed $token
+	 *
+	 * @return string
+	 */
+	function qode_wishlist_for_woocommerce_sanitize_wishlist_token( $token ) {
+		$token = is_scalar( $token ) ? (string) $token : '';
+		$token = sanitize_text_field( $token );
+
+		if ( '' === $token || strlen( $token ) > 64 || ! preg_match( '/^[A-Za-z0-9_-]+$/', $token ) ) {
+			return '';
+		}
+
+		return $token;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_sanitize_wishlist_table_title' ) ) {
+	/**
+	 * Wishlist names are plain text, never markup.
+	 *
+	 * @param mixed $title
+	 *
+	 * @return string
+	 */
+	function qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( $title ) {
+		$title = is_scalar( $title ) ? (string) $title : '';
+		$title = html_entity_decode( $title, ENT_QUOTES, 'UTF-8' );
+		$title = wp_strip_all_tags( $title );
+		$title = sanitize_text_field( $title );
+
+		if ( strlen( $title ) > 255 ) {
+			$title = function_exists( 'mb_substr' ) ? mb_substr( $title, 0, 255 ) : substr( $title, 0, 255 );
+		}
+
+		return $title;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_sanitize_wishlist_table' ) ) {
+	/**
+	 * Sanitize one wishlist table payload (meta + product rows).
+	 *
+	 * @param mixed $table
+	 *
+	 * @return array
+	 */
+	function qode_wishlist_for_woocommerce_sanitize_wishlist_table( $table ) {
+		if ( ! is_array( $table ) ) {
+			return array();
+		}
+
+		$clean_table = array();
+
+		if ( isset( $table['table_title'] ) ) {
+			$clean_table['table_title'] = qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( $table['table_title'] );
+		}
+
+		if ( isset( $table['date_created'] ) ) {
+			$clean_table['date_created'] = sanitize_text_field( (string) $table['date_created'] );
+		}
+
+		if ( isset( $table['visibility'] ) ) {
+			$visibility = sanitize_key( (string) $table['visibility'] );
+			$clean_table['visibility'] = in_array( $visibility, array( 'public', 'private', 'shared' ), true ) ? $visibility : 'public';
+		}
+
+		foreach ( $table as $item_key => $item ) {
+			if ( in_array( $item_key, array( 'table_title', 'date_created', 'visibility' ), true ) ) {
+				continue;
+			}
+
+			if ( ! is_array( $item ) ) {
+				if ( is_scalar( $item ) ) {
+					$meta_key = sanitize_key( (string) $item_key );
+					if ( '' !== $meta_key ) {
+						$clean_table[ $meta_key ] = sanitize_text_field( (string) $item );
+					}
+				}
+				continue;
+			}
+
+			$product_id = absint( $item_key );
+			if ( $product_id <= 0 ) {
+				continue;
+			}
+
+			$clean_item = array(
+				'product_id'    => isset( $item['product_id'] ) ? absint( $item['product_id'] ) : $product_id,
+				'product_title' => isset( $item['product_title'] ) ? sanitize_text_field( (string) $item['product_title'] ) : '',
+				'quantity'      => isset( $item['quantity'] ) ? max( 1, absint( $item['quantity'] ) ) : 1,
+				'date_added'    => isset( $item['date_added'] ) ? sanitize_text_field( (string) $item['date_added'] ) : '',
+			);
+
+			foreach ( $item as $extra_key => $extra_value ) {
+				if ( isset( $clean_item[ $extra_key ] ) || ! is_scalar( $extra_value ) ) {
+					continue;
+				}
+
+				$extra_key = sanitize_key( (string) $extra_key );
+				if ( '' === $extra_key ) {
+					continue;
+				}
+
+				$clean_item[ $extra_key ] = sanitize_text_field( (string) $extra_value );
+			}
+
+			$clean_table[ $product_id ] = $clean_item;
+		}
+
+		return $clean_table;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_sanitize_wishlist_items' ) ) {
+	/**
+	 * Sanitize a full wishlist cookie/transient/user-meta structure.
+	 *
+	 * @param mixed $items
+	 * @param bool  $from_guest_cookie Guest cookies cannot invent extra tables unless multi-wishlist is on.
+	 *
+	 * @return array
+	 */
+	function qode_wishlist_for_woocommerce_sanitize_wishlist_items( $items, $from_guest_cookie = false ) {
+		if ( ! is_array( $items ) ) {
+			return array();
+		}
+
+		$sanitized   = array();
+		$allow_multi = (bool) apply_filters( 'qode_wishlist_for_woocommerce_filter_is_multi_wishlist_on', false );
+		$reserved    = array( 'token', 'user', 'user_name' );
+
+		if ( isset( $items['token'] ) ) {
+			$token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $items['token'] );
+			if ( '' !== $token ) {
+				$sanitized['token'] = $token;
+			}
+		}
+
+		if ( isset( $items['user'] ) ) {
+			$sanitized['user'] = ( 'guest' === $items['user'] ) ? 'guest' : absint( $items['user'] );
+		}
+
+		if ( isset( $items['user_name'] ) ) {
+			$sanitized['user_name'] = sanitize_text_field( (string) $items['user_name'] );
+		}
+
+		foreach ( $items as $table_key => $table ) {
+			if ( in_array( $table_key, $reserved, true ) || ! is_array( $table ) ) {
+				continue;
+			}
+
+			$table_slug = sanitize_title( (string) $table_key );
+			if ( '' === $table_slug ) {
+				continue;
+			}
+
+			if ( $from_guest_cookie && ! $allow_multi && 'default' !== $table_slug ) {
+				continue;
+			}
+
+			$sanitized[ $table_slug ] = qode_wishlist_for_woocommerce_sanitize_wishlist_table( $table );
+		}
+
+		return $sanitized;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_current_user_can_edit_wishlist' ) ) {
+	/**
+	 * Shared wishlists are viewable by token. Mutations require the owner.
+	 *
+	 * @param string|false $token
+	 *
+	 * @return bool
+	 */
+	function qode_wishlist_for_woocommerce_current_user_can_edit_wishlist( $token = false ) {
+		if ( ! is_string( $token ) || '' === $token ) {
+			return true;
+		}
+
+		$token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $token );
+		if ( '' === $token ) {
+			return false;
+		}
+
+		$items = qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $token );
+		if ( empty( $items ) || ! isset( $items['user'] ) ) {
+			return false;
+		}
+
+		$owner = $items['user'];
+
+		if ( is_numeric( $owner ) ) {
+			return is_user_logged_in() && (int) $owner === (int) get_current_user_id();
+		}
+
+		if ( 'guest' !== $owner ) {
+			return false;
+		}
+
+		$cookie       = qode_wishlist_for_woocommerce_get_cookie( QODE_WISHLIST_FOR_WOOCOMMERCE_GUESTS_ITEMS );
+		$cookie_token = isset( $cookie['token'] ) ? qode_wishlist_for_woocommerce_sanitize_wishlist_token( $cookie['token'] ) : '';
+
+		return '' !== $cookie_token && $cookie_token === $token;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_sanitize_request_options' ) ) {
+	/**
+	 * Recursively sanitize shortcode/request option arrays.
+	 *
+	 * @param mixed $options
+	 *
+	 * @return array
+	 */
+	function qode_wishlist_for_woocommerce_sanitize_request_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return array();
+		}
+
+		$clean = array();
+
+		foreach ( $options as $key => $value ) {
+			if ( is_int( $key ) ) {
+				$clean_key = $key;
+			} else {
+				$clean_key = sanitize_key( (string) $key );
+				if ( '' === $clean_key ) {
+					continue;
+				}
+			}
+
+			if ( is_array( $value ) ) {
+				$clean[ $clean_key ] = qode_wishlist_for_woocommerce_sanitize_request_options( $value );
+			} elseif ( is_bool( $value ) ) {
+				$clean[ $clean_key ] = $value;
+			} elseif ( is_int( $value ) || is_float( $value ) ) {
+				$clean[ $clean_key ] = $value;
+			} elseif ( is_scalar( $value ) ) {
+				$clean[ $clean_key ] = sanitize_text_field( (string) $value );
+			}
+		}
+
+		return $clean;
+	}
+}
+
+if ( ! function_exists( 'qode_wishlist_for_woocommerce_decode_json_request' ) ) {
+	/**
+	 * Decode a JSON request payload, then sanitize values.
+	 *
+	 * @param mixed $raw
+	 *
+	 * @return array
+	 */
+	function qode_wishlist_for_woocommerce_decode_json_request( $raw ) {
+		if ( is_array( $raw ) ) {
+			return qode_wishlist_for_woocommerce_sanitize_request_options( $raw );
+		}
+
+		if ( ! is_string( $raw ) || '' === $raw ) {
+			return array();
+		}
+
+		$decoded = json_decode( $raw, true );
+		if ( ! is_array( $decoded ) ) {
+			return array();
+		}
+
+		return qode_wishlist_for_woocommerce_sanitize_request_options( $decoded );
+	}
+}
+
 if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_http_request_args' ) ) {
 	/**
 	 * Function that return wishlist page args
@@ -192,7 +484,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_http_request_args' ) 
 
 		if ( $check_user ) {
 			// phpcs:ignore WordPress.Security.NonceVerification
-			$user_items = isset( $_GET['view'] ) ? qode_wishlist_for_woocommerce_get_wishlist_items_by_token( sanitize_text_field( wp_unslash( $_GET['view'] ) ) ) : array();
+			$view_token = isset( $_GET['view'] ) ? qode_wishlist_for_woocommerce_sanitize_wishlist_token( wp_unslash( $_GET['view'] ) ) : '';
+			$user_items = '' !== $view_token ? qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $view_token ) : array();
 			$user_id    = is_user_logged_in() ? get_current_user_id() : 'guest';
 
 			if ( ! empty( $user_items ) && isset( $user_items['user'] ) ) {
@@ -207,7 +500,15 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_http_request_args' ) 
 			}
 		} elseif ( isset( $_GET[ $type ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			// phpcs:ignore WordPress.Security.NonceVerification
-			$arg = sanitize_text_field( wp_unslash( $_GET[ $type ] ) );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized by token/table helpers below.
+			$raw_arg = wp_unslash( $_GET[ $type ] );
+
+			if ( 'table' === $type ) {
+				$arg = sanitize_title( $raw_arg );
+			} else {
+				$arg = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $raw_arg );
+				$arg = '' !== $arg ? $arg : false;
+			}
 		}
 
 		return $arg;
@@ -244,7 +545,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_wishlist_items' ) ) {
 			$wishlist_items = $cache_wishlist_items;
 		}
 
-		return $wishlist_items;
+		return qode_wishlist_for_woocommerce_sanitize_wishlist_items( $wishlist_items );
 	}
 }
 
@@ -387,7 +688,21 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_wishlist_token_items'
 	function qode_wishlist_for_woocommerce_get_wishlist_token_items() {
 		$items = get_transient( QODE_WISHLIST_FOR_WOOCOMMERCE_GUESTS_ITEMS );
 
-		return ! empty( $items ) ? (array) array_reverse( $items, true ) : array();
+		if ( empty( $items ) || ! is_array( $items ) ) {
+			return array();
+		}
+
+		$sanitized = array();
+		foreach ( $items as $token => $token_items ) {
+			$clean_token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $token );
+			if ( '' === $clean_token || ! is_array( $token_items ) ) {
+				continue;
+			}
+
+			$sanitized[ $clean_token ] = qode_wishlist_for_woocommerce_sanitize_wishlist_items( $token_items );
+		}
+
+		return array_reverse( $sanitized, true );
 	}
 }
 
@@ -400,10 +715,15 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_get_wishlist_items_by_tok
 	 * @return array
 	 */
 	function qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $token ) {
+		$token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $token );
+		if ( '' === $token ) {
+			return array();
+		}
+
 		$items       = qode_wishlist_for_woocommerce_get_wishlist_token_items();
 		$table_items = array();
 
-		if ( isset( $items[ $token ] ) && $items[ $token ]['token'] === $token ) {
+		if ( isset( $items[ $token ] ) && isset( $items[ $token ]['token'] ) && $items[ $token ]['token'] === $token ) {
 			$table_items = $items[ $token ];
 		}
 
@@ -836,12 +1156,12 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_update_wishlist_items' ) 
 	function qode_wishlist_for_woocommerce_update_wishlist_items( $item_ids, $action, $new_table_name = false, $user_token = false, $new_table_visibility = '' ) {
 		$items            = qode_wishlist_for_woocommerce_get_wishlist_items();
 		$update_flag      = true;
-		$table_name_title = esc_attr__( 'My Wishlist', 'qode-wishlist-for-woocommerce' );
+		$table_name_title = qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( esc_attr__( 'My Wishlist', 'qode-wishlist-for-woocommerce' ) );
 		$table_name       = 'default';
 
 		// Set new table name.
 		if ( ! empty( $new_table_name ) && 'default' !== $new_table_name ) {
-			$table_name_title = esc_html( esc_attr( $new_table_name ) );
+			$table_name_title = qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( $new_table_name );
 			$table_name       = sanitize_title( $new_table_name );
 		}
 
@@ -855,6 +1175,8 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_update_wishlist_items' ) 
 		// If user wishlist table title doesn't exist, set it.
 		if ( ! isset( $items[ $table_name ]['table_title'] ) ) {
 			$items[ $table_name ]['table_title'] = $table_name_title;
+		} else {
+			$items[ $table_name ]['table_title'] = qode_wishlist_for_woocommerce_sanitize_wishlist_table_title( $items[ $table_name ]['table_title'] );
 		}
 
 		// If user default wishlist table title is translated, set the new one.
@@ -881,12 +1203,18 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_update_wishlist_items' ) 
 			}
 		}
 
-		// Set token.
-		$token = qode_wishlist_for_woocommerce_generate_token();
+		// Reuse a token only when it already exists server-side. Never let a guest cookie mint a new key.
+		$candidate_token = '';
 		if ( isset( $items['token'] ) ) {
-			$token = $items['token'];
-		} elseif ( ! empty( $user_token ) ) {
-			$token = esc_attr( $user_token );
+			$candidate_token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $items['token'] );
+		}
+		if ( '' === $candidate_token && ! empty( $user_token ) ) {
+			$candidate_token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $user_token );
+		}
+
+		$token = qode_wishlist_for_woocommerce_generate_token();
+		if ( '' !== $candidate_token && ! empty( qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $candidate_token ) ) ) {
+			$token = $candidate_token;
 		}
 
 		// Set unique wishlist items token.
@@ -933,6 +1261,15 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_update_wishlist_items_db'
 	 * Function that update current user wishlist items into database
 	 */
 	function qode_wishlist_for_woocommerce_update_wishlist_items_db( $items, $token ) {
+		$token = qode_wishlist_for_woocommerce_sanitize_wishlist_token( $token );
+		$items = qode_wishlist_for_woocommerce_sanitize_wishlist_items( $items );
+
+		if ( '' === $token ) {
+			return;
+		}
+
+		$items['token'] = $token;
+
 		if ( is_user_logged_in() ) {
 			$user_id = get_current_user_id();
 

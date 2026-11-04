@@ -4,7 +4,7 @@ Tags: wishlist, woocommerce wishlist, product wishlist, woocommerce, add to wish
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.9
+Stable tag: 1.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -236,6 +236,11 @@ Feel free to try out some of our other products:
 9. Admin Wishlist Page Styles.
 
 == Changelog ==
+
+= 1.3.0 - 04-11-2026 =
+- Fixed stored XSS in shared wishlist titles by treating table names as plain text and sanitizing guest wishlist state before persistence
+- Restricted shared wishlist item changes to the list owner
+- Hardened REST option decoding, guest wishlist cookies, and SVG media uploads
 
 = 1.2.9 - 24-09-2026 =
 - Improved frontend performance by skipping editor-only product queries and admin option map on storefront requests

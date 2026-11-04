@@ -11,7 +11,7 @@ if ( ! empty( trim( $table_title ) ) || apply_filters( 'qode_wishlist_for_woocom
 		<?php if ( ! empty( trim( $table_title ) ) ) { ?>
 			<div class="qwfw-m-section-heading-inner">
 				<<?php qode_wishlist_for_woocommerce_escape_title_tag( $table_title_tag ); ?> class="qwfw-m-heading">
-					<?php echo wp_kses_post( $table_title ); ?>
+					<?php echo esc_html( $table_title ); ?>
 				</<?php qode_wishlist_for_woocommerce_escape_title_tag( $table_title_tag ); ?>>
 			</div>
 		<?php } ?>

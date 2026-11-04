@@ -94,7 +94,7 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_add_to_wishlist_item_call
 
 			$item_id = isset( $_POST['item_id'] ) ? absint( $_POST['item_id'] ) : 0;
 			$action  = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '';
-			$options = isset( $_POST['options'] ) ? json_decode( sanitize_text_field( wp_unslash( $_POST['options'] ) ), true ) : array();
+			$options = isset( $_POST['options'] ) ? qode_wishlist_for_woocommerce_decode_json_request( wp_unslash( $_POST['options'] ) ) : array();
 
 			if ( empty( $item_id ) || empty( $action ) ) {
 				qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'Item ID or action are invalid.', 'qode-wishlist-for-woocommerce' ) );

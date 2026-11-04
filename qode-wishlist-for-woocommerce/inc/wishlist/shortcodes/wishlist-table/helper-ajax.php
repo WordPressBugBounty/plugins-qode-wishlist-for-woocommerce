@@ -106,21 +106,21 @@ if ( ! function_exists( 'qode_wishlist_for_woocommerce_wishlist_table_item_callb
 
 			$item_ids = isset( $_POST['item_ids'] ) && is_array( $_POST['item_ids'] ) ? array_map( 'absint', $_POST['item_ids'] ) : array();
 			$action   = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '';
-			$table    = isset( $_POST['table'] ) && ! empty( $_POST['table'] ) ? sanitize_text_field( wp_unslash( $_POST['table'] ) ) : false;
-			$token    = isset( $_POST['token'] ) && ! empty( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : false;
-			$options  = isset( $_POST['options'] ) ? json_decode( sanitize_text_field( wp_unslash( $_POST['options'] ) ), true ) : array();
+			$table    = isset( $_POST['table'] ) && ! empty( $_POST['table'] ) ? sanitize_title( wp_unslash( $_POST['table'] ) ) : false;
+			$token    = isset( $_POST['token'] ) && ! empty( $_POST['token'] ) ? qode_wishlist_for_woocommerce_sanitize_wishlist_token( wp_unslash( $_POST['token'] ) ) : false;
+			$options  = isset( $_POST['options'] ) ? qode_wishlist_for_woocommerce_decode_json_request( wp_unslash( $_POST['options'] ) ) : array();
+
+			if ( '' === $token ) {
+				$token = false;
+			}
 
 			if ( empty( $item_ids ) || empty( $action ) ) {
 				qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'Item IDs or action are invalid.', 'qode-wishlist-for-woocommerce' ) );
 			} else {
 
-				if ( ! empty( $token ) ) {
-					$token_wishlist_items = qode_wishlist_for_woocommerce_get_wishlist_items_by_token( $token );
-
-					if ( ! isset( $token_wishlist_items['user'] ) || ! in_array( $token_wishlist_items['user'], array( 'guest', get_current_user_id() ), true ) ) {
-						qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
-						wp_die( esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
-					}
+				if ( ! qode_wishlist_for_woocommerce_current_user_can_edit_wishlist( $token ) ) {
+					qode_wishlist_for_woocommerce_get_ajax_status( 'error', esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
+					wp_die( esc_html__( 'You are not authorized.', 'qode-wishlist-for-woocommerce' ) );
 				}
 
 				// Update wishlist items.
